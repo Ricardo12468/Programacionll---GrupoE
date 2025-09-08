@@ -8,7 +8,7 @@ ventana_principal.title("Libro de Pacientes y Doctores")
 ventana_principal.geometry("750x600")
 edadVar=tk.StringVar()
 def enmascarar_fecha(texto):
-    limpio=''.join(filter(str.isdigit(),texto))
+    limpio=''.join(filter(str.isdigit,texto))
     formato_final=""
     
     if len(limpio)>8:
@@ -39,8 +39,26 @@ def guardar_en_archivo():
             archivo.write(f"{paciente['Nombre']} | {paciente['Fecha de Nacimiento']} | {paciente['Edad']} | "
                           f"{paciente['Genero']} | {paciente['Grupo Sanguineo']} | {paciente['Tipo de Seguro']} | "
                           f"{paciente['Centro Medico']}\n")
-
-# Crear contenedor Notebook (pestañas)
+def cargar_desde_archivo_paciente():
+    try:
+        with open("pacientes.txt","r",encoding="utf-8")as archivo:
+            paciente_data.clear()
+            for linea in archivo:
+                datos=linea.strip().split("|")
+                if len(datos)==7:
+                    paciente={
+                    "Nombre":datos[0],
+                    "Fecha de Nacimiento":datos[1],
+                    "Edad":datos[2],
+                    "Genero":datos[3],
+                    "Grupo Sanguineo":datos[4],
+                    "Tipo de Seguro":datos[5],
+                    "Centro Medico":datos[6]
+                    }
+                paciente_data.append(paciente)
+        cargar_treeview()
+    except FileNotFoundError:
+        open("pacientes.txt","w",encoding="utf-8").close()
 pestañas=ttk.Notebook(ventana_principal)
 #Crear frames (uno por pestaña)
 frame_pacientes=ttk.Frame(pestañas)
